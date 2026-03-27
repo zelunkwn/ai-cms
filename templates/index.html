@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI CMS Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">AI<span>CMS</span></div>
+        <ul class="nav-links">
+            <li onclick="showSection('dashboard')" class="active">Dashboard</li>
+            <li onclick="showSection('create')">Create API</li>
+            <li onclick="showSection('list')">API List</li>
+            <li onclick="showSection('keys')">API Keys</li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+        
+        <!-- SECTION: DASHBOARD -->
+        <div class="card recent-logs">
+            <h3>Recent API Calls</h3>
+            <div id="logs-container" style="margin-top: 1rem;">
+                <p class="sub-text">Loading logs...</p>
+            </div>
+        </div>
+        <section id="dashboard" class="section active">
+            <header>
+                <h1>Overview</h1>
+                <p>Monitor your AI endpoints in real-time.</p>
+            </header>
+            
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <span class="label">Total Calls</span>
+                    <span class="value" id="stat-calls">0</span>
+                </div>
+                <div class="card stat-card">
+                    <span class="label">Tokens Used</span>
+                    <span class="value" id="stat-tokens">0</span>
+                </div>
+                <div class="card stat-card">
+                    <span class="label">Est. Cost</span>
+                    <span class="value" id="stat-cost">$0.00</span>
+                </div>
+                <div class="card stat-card">
+                    <span class="label">Active Endpoints</span>
+                    <span class="value" id="stat-apis">0</span>
+                </div>
+            </div>
+
+            <div class="card recent-logs">
+                <h3>System Status</h3>
+                <p class="status-ok">● System Operational</p>
+                <p class="sub-text">All dynamic routes are live.</p>
+            </div>
+        </section>
+
+        <!-- SECTION: CREATE API -->
+        <section id="create" class="section">
+            <header>
+                <h1>Create New Endpoint</h1>
+                <p>Define logic using natural language.</p>
+            </header>
+
+            <form id="create-form" class="card form-card">
+                <div class="form-group">
+                    <label>Endpoint Route</label>
+                    <input type="text" id="api-route" placeholder="e.g. summarize-text" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>AI Model</label>
+                    <select id="api-model">
+                        <option value="gpt-4o">GPT-4o</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        <option value="claude-3">Claude 3.5 Sonnet</option>
+                        <option value="llama-3">Llama 3 (Local)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>System Prompt (Logic)</label>
+                    <textarea id="api-prompt" rows="5" placeholder="e.g. You are a helpful assistant that summarizes text..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Deploy Endpoint</button>
+            </form>
+        </section>
+
+        <!-- SECTION: API LIST -->
+        <section id="list" class="section">
+            <header>
+                <h1>Active Endpoints</h1>
+                <p>Copy the URL below to test in Postman.</p>
+            </header>
+            
+            <div class="card table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Route</th>
+                            <th>Model</th>
+                            <th>Calls</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="api-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section id="keys" class="section">
+    <header>
+        <h1>API Keys</h1>
+        <p>Manage keys for securing your endpoints.</p>
+    </header>
+    
+    <div class="card form-card" style="margin-bottom: 1.5rem;">
+        <div class="form-group">
+            <label>Key Name</label>
+            <input type="text" id="key-name" placeholder="e.g. Production Key">
+        </div>
+        <button onclick="createKey()" class="btn-primary">Generate New Key</button>
+    </div>
+    
+    <div class="card table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Key</th>
+                    <th>Usage</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="keys-table-body"></tbody>
+        </table>
+    </div>
+</section>
+
+<div class="card recent-logs" style="margin-top: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Recent API Calls</h3>
+        <button onclick="exportLogs()" class="btn-primary" style="width: auto; padding: 0.5rem 1rem;">📥 Export CSV</button>
+    </div>
+    <div id="logs-container" style="margin-top: 1rem;">
+        <p class="sub-text">Loading logs...</p>
+    </div>
+</div>
+
+<!-- Add Logout in Sidebar -->
+<div style="margin-top: auto; padding-top: 2rem; border-top: 2px solid var(--border);">
+    <a href="/logout" style="color: var(--text-main); text-decoration: none; font-weight: 600;">Logout →</a>
+</div>
+
+</main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

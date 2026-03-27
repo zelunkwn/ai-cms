@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI CMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 85, 255, 0.1);
+            animation: float 25s linear infinite;
+            bottom: -150px;
+            border-radius: 4px;
+        }
+
+        .bg-animation span:nth-child(1) { left: 5%; width: 80px; height: 80px; animation-delay: 0s; }
+        .bg-animation span:nth-child(2) { left: 15%; width: 40px; height: 40px; animation-delay: 2s; animation-duration: 18s; }
+        .bg-animation span:nth-child(3) { left: 25%; width: 60px; height: 60px; animation-delay: 4s; }
+        .bg-animation span:nth-child(4) { left: 35%; width: 100px; height: 100px; animation-delay: 0s; animation-duration: 22s; }
+        .bg-animation span:nth-child(5) { left: 45%; width: 50px; height: 50px; animation-delay: 6s; }
+        .bg-animation span:nth-child(6) { left: 55%; width: 90px; height: 90px; animation-delay: 3s; }
+        .bg-animation span:nth-child(7) { left: 65%; width: 30px; height: 30px; animation-delay: 7s; }
+        .bg-animation span:nth-child(8) { left: 75%; width: 70px; height: 70px; animation-delay: 2s; animation-duration: 20s; }
+        .bg-animation span:nth-child(9) { left: 85%; width: 45px; height: 45px; animation-delay: 5s; }
+        .bg-animation span:nth-child(10) { left: 95%; width: 85px; height: 85px; animation-delay: 1s; }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1200px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Grid Pattern Overlay */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 85, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 85, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+        }
+
+        /* 3D Card Container */
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            perspective: 1000px;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 500px;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #000000;
+            box-shadow: 
+                15px 15px 0px #000000,
+                0 0 40px rgba(0, 85, 255, 0.3);
+            border-radius: 8px;
+            transform-style: preserve-3d;
+            animation: cardFloat 6s ease-in-out infinite;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .auth-card:hover {
+            transform: translate(-3px, -3px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 
+                18px 18px 0px #000000,
+                0 0 60px rgba(0, 85, 255, 0.5);
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .auth-card h1 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            letter-spacing: -2px;
+            font-weight: 800;
+            transform: translateZ(20px);
+        }
+
+        .auth-card .subtitle {
+            text-align: center;
+            color: #555555;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+            transform: translateZ(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            transform: translateZ(5px);
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #000000;
+            background: #FAFAFA;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+
+        input:focus {
+            background: #E0F0FF;
+            border-color: #0055FF;
+            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #0055FF;
+            color: white;
+            border: 2px solid #000000;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000000;
+            transition: all 0.2s;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #0044CC;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000000;
+        }
+
+        .btn-primary:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #000000;
+            transform: translateZ(10px);
+        }
+
+        .auth-links a {
+            color: #0055FF;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+            color: #0044CC;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+            color: #721c24;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Logo Animation */
+        .logo-text {
+            display: inline-block;
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    
+    <!-- Grid Overlay -->
+    <div class="bg-grid"></div>
+
+    <div class="auth-container">
+        <div class="card auth-card">
+            <h1><span class="logo-text">AI</span><span style="color:#0055FF">CMS</span></h1>
+            <p class="subtitle">Sign in to your account</p>
+            
+            <div id="message-container"></div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+            
+            <div class="auth-links">
+                <p>Don't have an account? <a href="/register">Create one here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 3D Tilt Effect
+        const card = document.querySelector('.auth-card');
+        const container = document.querySelector('.auth-container');
+
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateX(0) rotateY(0)';
+        });
+
+        // Login Form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value
+                })
+            });
+            
+            const data = await res.json();
+            const messageContainer = document.getElementById('message-container');
+            
+            if (res.ok) {
+                messageContainer.innerHTML = '<div style="background:#d4edda;border:2px solid #28a745;padding:1rem;margin-bottom:1rem;border-radius:4px;text-align:center;font-weight:600;color:#155724;">Login successful! Redirecting...</div>';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else {
+                messageContainer.innerHTML = `<div class="error-message">${data.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
