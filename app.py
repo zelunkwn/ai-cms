@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_bcrypt import Bcrypt
 from datetime import datetime, timedelta
+from flask_cors import CORS
 import time
 import random
 import json
@@ -12,7 +13,7 @@ import secrets
 import os
 
 app = Flask(__name__)
-
+CORS(app, supports_credentials=True)
 # --- CONFIGURATION ---
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///ai_cms.db')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
@@ -25,8 +26,6 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-
-# --- DATABASE MODELS ---
 
 # --- DATABASE MODELS ---
 
@@ -412,5 +411,6 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    port = int(os.environ.get('PORT', 5000))
+    # Hugging Face Spaces uses port 7860
+    port = int(os.environ.get('PORT', 7860))
     app.run(host='0.0.0.0', port=port, debug=False)
