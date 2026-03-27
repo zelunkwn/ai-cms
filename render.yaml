@@ -2,8 +2,10 @@ services:
   - type: web
     name: ai-cms-platform
     env: python
+    region: singapore
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn production:app
+    startCommand: gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
@@ -13,8 +15,11 @@ services:
         fromDatabase:
           name: ai-cms-db
           property: connectionString
+      - key: FLASK_ENV
+        value: production
 
 databases:
   - name: ai-cms-db
     databaseName: ai_cms
     plan: free
+    region: singapore
